@@ -1,9 +1,10 @@
 ```
 ```
-## Tomcat
+# Tomcat
+---
 
-### Web应用服务器：
-__Tomcat__、 Jboos、 Weblogic、Jetty
++ ### Web应用服务器：
+    __Tomcat__、 Jboos、 Weblogic、Jetty
 
 
 ![](./../images/web/web01.png)
@@ -22,16 +23,20 @@ __Tomcat__、 Jboos、 Weblogic、Jetty
         >- __webapps__: 存放允许客户端访问的资源（Java程序）
         >- __work__: 存放JSP转换后的Servlet文件
 
-+ ### IDEA集成Tomcat
-    + #### 创建Java enterprise项目，勾选Web Application
-    + #### 打开Run/Debug configurations(在右上角绿色锤子右边) 
-      >+ ##### 点加号->Tomcat Server-Local
-      >+ ##### 加入Tomcat，选择本地路径
-      >+ ##### Deployment加入工程
-    + #### 可以运行
 
+---
++ ### IDEA集成Tomcat
+    + ##### 创建Java Enterprise项目，勾选Web Application
+    + ##### 打开Run/Debug configurations(在右上角绿色锤子右边) 
+      >+ 点加号->Tomcat Server-Local
+      >+ 加入Tomcat，选择本地路径
+      >+ Deployment加入工程
+    + ##### 可以运行
+
+
+---
 
 + ### URL
-  + #### IP:Port/Application Name/
-  + #### Application context可以Run/Debug configurations-Deployment修改URL中的Application Name
+  >+ IP:Port/Application Name/
+  >+ Application context可以Run/Debug configurations-Deployment修改URL中的Application Name
 
