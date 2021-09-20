@@ -31,7 +31,7 @@
     + 接受客户端请求
     + 根据请求做出响应
   
-  ##### 【样例】
+  ### 【样例】
   
   + 新建一个class叫MyServlet
   
@@ -100,7 +100,6 @@
 
     <br></br>
 
-
     ##### 【输出结果】
 
     <br></br>
@@ -113,12 +112,15 @@
 
   #### 方法二：注解
 
+<br></br>
+
   ```java
     @WebServlet("/demo1")
     public class MyServlet implements Servlet {
 
     }
   ```
+<br></br>
 上述两种配置方式完全一致，在浏览器地址中访问/demo1就直接映射到MyServlet
 
 <br></br>
@@ -126,3 +128,12 @@
 ---
 
 ### Servlet生命周期
+
+>+ __init()__ ：当浏览器访问Servlet的时候，Tomcat会查询当前实例化对象是否存在，
+    若不存在，Tomcat通过反射机制调无参构造，init完成初始化操作（一次）（单例模式）
+
+>+ __service()__ : 之后每次都是进行业务逻辑操作，不再初始化（n次）
+
+>+ __destroy()__ : 关闭后释放占用资源（一次）>
+
+
