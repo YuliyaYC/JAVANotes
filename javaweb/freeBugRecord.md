@@ -1,7 +1,8 @@
 # Bug修复记录
 
----
-+ ##### <font color=teal>【已解决】</font>Mac IDEA 中无法运行web项目Tomcat报错Error13
+ <br></br>
+
++ ##### <font color=teal>【已解决】</font> Mac IDEA 中无法运行web项目Tomcat报错Error13
    
    
    <br></br>
@@ -16,7 +17,7 @@
   
     <br></br>
   >生成的文件夹叫target，和out一样的，可以在project structure->module->path中看
-  
+
   <br></br>
    
 ---  
