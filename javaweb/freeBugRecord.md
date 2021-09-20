@@ -21,21 +21,25 @@
   <br></br>
    
 ---  
-+ ##### <font color=orange>【未解决】</font>无法自动靠localhost：8080跳转到index，404报错
++ ##### <font color=teal>【已解决】</font>无法自动靠localhost：8080跳转到index，404报错
     <br></br>
-   
+   Tomcat Run Configuration-Deployment中的path改成/
    <br></br>
 ---
-+ ##### <font color=orange>【未解决】</font>在web.xml中写完servlet和servlet-mapping标签，
++ ##### <font color=teal>【已解决】</font>在web.xml中写完servlet和servlet-mapping标签，
    ##### 访问localhost：8080/myservlet，404报错
    ![](./../images/web/web03.png)
 <br></br>
+Tomcat Run Configuration-Deployment中的path改成/
 <br></br>
 ---
 
-+ ##### <font color=orange>【未解决】</font>用注解同样，
-   ##### 访问localhost：8080/myservlet，404报错
++ ##### <font color=teal>【已解决】</font>用注解同样，访问localhost：8080/myservlet，404报错
 
 <br></br>
+
+Tomcat Run Configuration-Deployment中的path改成/
+
 <br></br>
+
 ---

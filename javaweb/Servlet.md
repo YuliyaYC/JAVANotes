@@ -134,6 +134,88 @@
 
 >+ __service()__ : 之后每次都是进行业务逻辑操作，不再初始化（n次）
 
->+ __destroy()__ : 关闭后释放占用资源（一次）>
+>
++ __destroy()__ : 关闭后释放占用资源（一次）
+---
+
+### ServletConfig
+
+```java
+public interface ServletConfig {
+
+    String getServletName();
+
+    ServletContext getServletContext();
+
+    String getInitParameter(String var1);
+
+    Enumeration<String> getInitParameterNames();
+}
+
+```
+
+该接口描述Servlet基本信息
+
++ #### getServletName() 返回Servlet名字
+
++ #### getInitParameter(String var1) 通过key索引，返回init参数的值（web.xml）
+
+web.xml中：
+
+```xml
+        <servlet>
+            <servlet-name>MyServlet</servlet-name>
+            <servlet-class>com.example.servlet.MyServlet</servlet-class>
+            <init-param>
+                <param-name>username</param-name>
+                <param-value>admin</param-value>
+            </init-param>
+        </servlet>
+```
+MyServlet.java中
+
+```java
+    @Override
+    public void init(ServletConfig servletConfig) throws ServletException {
+        System.out.println(getServletConfig().getInitParameter("username"));
+    }
+```
+
++ #### getInitParameterNames() 返回所有Servlet名字,enumeration形式
+web.xml中：
+```xml
+        <servlet>
+            <servlet-name>MyServlet</servlet-name>
+            <servlet-class>com.example.servlet.MyServlet</servlet-class>
+            <init-param>
+                <param-name>username</param-name>
+                <param-value>user</param-value>
+            </init-param>
+            <init-param>
+                <param-name>password</param-name>
+                <param-value>123456</param-value>
+            </init-param>
+            <init-param>
+                <param-name>type</param-name>
+                <param-value>admin</param-value>
+            </init-param>
+        </servlet>
+```
+MyServlet.java中
+```java
+    @Override
+    public void init(ServletConfig servletConfig) throws ServletException {
+        Enumeration<String> enumeration = servletConfig.getInitParameterNames();
+        while (enumeration.hasMoreElements()) {
+            String  element = enumeration.nextElement();
+            System.out.println(servletConfig.getInitParameter(element));
+        }
+    }
+```
+
++ #### getServletContext() 返回ServletContext对象，是一些服务信息
+ServletContext是接口
+
+
 
 
