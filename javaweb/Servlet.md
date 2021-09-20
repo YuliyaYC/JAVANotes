@@ -225,6 +225,201 @@ MyServlet.java中
 
 ServletContext是接口
 
+ServletContext.getContextPath()就是Application Context名字
+ServletContext.getServerInfo()就是tomcat版本
 
+ServletConfig和ServletContext的区别：
 
+ServletConfig作用于某个Servlet实例[局部独有]
+ServletContext作用于Web应用[全局共有]
+多个Servlet实例对应一个Web应用，所以多个ServletConfig对应一个ServletContext
 
++ ### Servlet的层次结构
+  
+__Servlet --->  GenericServlet[帮助我们屏蔽不用的四个函数] ---> HttpServlet[根据不同类型分发请求]__
+
+开发时继承HttpServlet
+
+```java
+
+public class TestServlet extends HttpServlet {
+    
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        super.doGet(req, resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        super.doPost(req, resp);
+    }
+}
+
+```
+<br></br>
+
+##### HTTP常用请求：
+>GET 读取
+>POST 保存
+>PUT 修改
+>DELETE 删除
+
+CRUD-create read update delete
+
+<br></br>
+
+```java
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+@WebServlet("/test")
+public class TestServlet extends HttpServlet {
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        //通过地址栏发起的请求默认是get，所以调用doGet
+        resp.getWriter().write("GET");
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.getWriter().write("POST");
+    }
+}
+```
+GenericServlet实现Servlet接口，同时为它的子类屏蔽了不常用的方法，
+子类只需要重写service方法即可
+
+HttpServlet继承GenericServlet，根据请求类型进行分发处理，GET进入doGET方法，POST进入doPOST方法
+
+开发者自定义的Servlet类只需要继承HttpServlet即可，重写doGET和doPOST
+
+#### 山寨版MyGenericServlet
+
+```java
+package com.example.servlet;
+
+import javax.servlet.*;
+import java.io.IOException;
+
+public class MyGenericServlet implements Servlet {
+    @Override
+    public void init(ServletConfig servletConfig) throws ServletException {
+
+    }
+
+    @Override
+    public ServletConfig getServletConfig() {
+        return null;
+    }
+
+    @Override
+    public void service(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
+
+    }
+
+    @Override
+    public String getServletInfo() {
+        return null;
+    }
+
+    @Override
+    public void destroy() {
+
+    }
+}
+
+```
+
+#### 山寨版MyHttpServlet
+
+```java
+
+package com.example.servlet;
+
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+@WebServlet("/mytest")
+public class MyHttpServlet extends MyGenericServlet{
+
+    //通过继承屏蔽另外四个方法
+
+    @Override
+    public void service(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
+
+        //根据请求类型分发请求
+
+        //这里HttpServletRequest是servletRequest的子类，有父类没有的方法
+        //为了用子类的方法，把父类进行强转成子类
+        HttpServletRequest request = (HttpServletRequest) servletRequest;
+
+        //Response同理
+        HttpServletResponse response = (HttpServletResponse) servletResponse;
+
+        //获取请求类型
+        String method = request.getMethod();
+
+        //根据请求类型调用不同函数
+        switch (method) {
+            case "GET":
+                this.doGet(request, response);
+                break;
+            case "POST":
+                this.doPost(request, response);
+                break;
+        }
+
+    }
+
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
+
+    }
+
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException{
+
+    }
+}
+```
+#### 运行测试
+
+```java
+package com.example.servlet;
+
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+@WebServlet("/hello")
+public class HelloServlet extends MyHttpServlet {
+
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
+        try {
+            response.getWriter().write("GET");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException{
+        try {
+            response.getWriter().write("POST");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+```
