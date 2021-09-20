@@ -128,20 +128,23 @@
 ---
 
 + ### Servlet生命周期
+  
+  <br></br>
 
 >+ __init()__ ：当浏览器访问Servlet的时候，Tomcat会查询当前实例化对象是否存在，
     若不存在，Tomcat通过反射机制调无参构造，init完成初始化操作（一次）（单例模式）
-
 >+ __service()__ : 之后每次都是进行业务逻辑操作，不再初始化（n次）
-
 >+ __destroy()__ : 关闭后释放占用资源（一次）
 
 <br></br>
+
 ---
 
 
 
 + ### ServletConfig
+  
+  <br></br>
 
 ```java
 public interface ServletConfig {
@@ -157,7 +160,9 @@ public interface ServletConfig {
 
 ```
 
-该接口描述Servlet基本信息
+__该接口描述Servlet基本信息__
+
+<br></br>
 
 + #### getServletName() 返回Servlet名字
 
@@ -216,7 +221,8 @@ MyServlet.java中
     }
 ```
 
-+ #### getServletContext() 返回ServletContext对象，是一些服务信息
++ #### getServletContext() 返回ServletContext对象，是Servlet的上下文，整个Servlet的管理者
+
 ServletContext是接口
 
 
