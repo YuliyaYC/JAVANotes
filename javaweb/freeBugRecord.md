@@ -1,13 +1,33 @@
 # Bug修复记录
 
 ---
-1. ##### Mac IDEA 中运行web项目Tomcat报错Error13
++ ##### <font color=teal>【已解决】</font>Mac IDEA 中无法运行web项目Tomcat报错Error13
    
-   【解决】
-   - terminal中输入
-   ```linux
-   % chmod -R 777 tomcat文件夹路径
-   ```
+   
+   <br></br>
+   >- terminal中输入
+   >```linux
+   >% chmod -R 777 tomcat文件夹路径
+   >```
+   <br></br>
 ---
 
-2. ##### Deployment的添加中没有war包选项，项目启动后没有out文件夹，无法自动靠localhost：8080/跳转到index.jps，404报错
++ ##### <font color=teal>【已解决】</font>项目启动后没有out文件夹
+  
+    <br></br>
+  >生成的文件夹叫target，和out一样的，可以在project structure->module->path中看
+  
+  <br></br>
+   
+---  
++ ##### <font color=orange>【未解决】</font>无法自动靠localhost：8080跳转到index，404报错
+    <br></br>
+   
+   <br></br>
+---
++ ##### <font color=orange>【未解决】</font>在web.xml中写完servlet和servlet-mapping标签，
+   ##### 访问localhost：8080/myservlet，404报错
+   ![](./../images/web/web03.png)
+<br></br>
+<br></br>
+---
