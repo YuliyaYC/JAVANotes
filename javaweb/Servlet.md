@@ -1,5 +1,7 @@
 # Servlet
----
+
+<br></br>
+
 + ### 什么是Servlet？
   
   <br></br>
@@ -80,33 +82,47 @@
 
     浏览器无法直接访问Servlet文件夹，只能通过映射间接访问。
 
-    ### 方法一：
+    #### 方法一：web.xml中添加映射
+
+    <br></br>
+
+    ```xml
+            <servlet>
+                <servlet-name>MyServlet</servlet-name>
+                <servlet-class>com.example.servlet.MyServlet</servlet-class>
+            </servlet>
+
+            <servlet-mapping>
+                <servlet-name>MyServlet</servlet-name>
+                <url-pattern>/myservlet</url-pattern>
+            </servlet-mapping>
+    ```
+
+    <br></br>
 
 
-  + web.xml中添加映射
+    ##### 【输出结果】
 
-  <br></br>
+    <br></br>
 
-  ```xml
-    <servlet>
-        <servlet-name>MyServlet</servlet-name>
-        <servlet-class>com.example.servlet.MyServlet</servlet-class>
-    </servlet>
+    ![](./../images/web/web04.png)
 
-    <servlet-mapping>
-        <servlet-name>MyServlet</servlet-name>
-        <url-pattern>/myservlet</url-pattern>
-    </servlet-mapping>
-  ```
-  <br></br>
-
-  ##### 【输出结果】
-
-  <br></br>
-
-  ![](./../images/web/web04.png)
-
-  <br></br>
+    <br></br>
 
 ---
 
+  #### 方法二：注解
+
+  ```java
+    @WebServlet("/demo1")
+    public class MyServlet implements Servlet {
+
+    }
+  ```
+上述两种配置方式完全一致，在浏览器地址中访问/demo1就直接映射到MyServlet
+
+<br></br>
+
+---
+
+### Servlet生命周期
