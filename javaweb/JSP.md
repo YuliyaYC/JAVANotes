@@ -126,3 +126,164 @@
 </html>
 ```
 
+<br></br>
+
+---
+
+### 九个JSP内置对象
+
+<br></br>
+
+>1. __request__:表示一次请求 HttpSevletRequest
+>2. __response__：表示一次响应 HttpSevletResponse
+>3. __pageContext__：页面上下文，获取页面信息，PageContext
+>4. __session__：表示一次会话,保存用户信息，HttpSession
+>5. __application__：表示当前web应用，全局对象，保存所有用户共享信息，ServletContext
+>6. __config__：表示当前JSP对应的Servlet的ServletConfig对象，获取当前Servlet的信息，ServletConfig
+>7. __out__：向浏览器输出数据，JspWriter
+>8. __page__：当前JSP对应的Servlet对象，Servlet
+>9. __exception__：表示JSP页面发生的异常，Exception
+
+<br></br>
+
+__常用的是request，response，session，application，pageContext__
+
+<br></br>
+
+---
+
+### request常用方法
+
+<br></br>
+
+---
+
+1. #### String getParameter(String key) 根据key获取客户端发来请求的参数
+  
+<br></br>
+
+URL: localhost:8080/hello?id=9&name=a&age=20
+
+<br></br>
+
+##### java中用request
+
+```java
+String idStr = request.getParameter("id");
+//强转
+Integer id = Integer.parseInt(idStr);
+System.out.println(id);
+```
+<br></br>
+
+
+##### jsp中用request
+
+```jsp
+    <%
+        String id = request.getParameter("id");
+    %>
+    <%=id%>
+
+```
+<br></br>
+
+这里可以直接用request对象是因为Servlet的service方法的参数中已经传进来request对象了，
+jsp会自动把代码转给servlet的service方法，当然可以用request对象
+
+<br></br>
+
+---
+
+2. #### void setAttribute(String key, Object value) 通过键值对的形式保存数据
+  
+
+3. #### Object getAttribute(String key) 通过key取出value
+  
+<br></br>
+
+![](./../images/web/web06.png)
+<br></br>
+
+getParameter是用于客户端发来的请求中的参数
+而get/setAttribute是服务器中数值的存放，把数据存入request中，方便jsp文件间的数据读写
+
+<br></br>
+
+##### test1.jsp
+```jsp
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <title>test1</title>
+</head>
+<body>
+    <%
+        String idStr = request.getParameter("id");
+        Integer id = Integer.parseInt(idStr);
+        id++;
+
+        //把数据存入到request中
+        request.setAttribute("ID", id);
+
+        //把请求转发给test2.jsp
+        request.getRequestDispatcher("test2.jsp").forward(request, response);
+    %>
+</body>
+</html>
+```
+<br></br>
+
+
+##### test2.jsp
+```jsp
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <title>test2</title>
+</head>
+<body>
+    <%
+        //拿过来是Object类型，转型
+        Integer id = (Integer) request.getAttribute("ID");
+    %>
+    <%=id%>
+
+
+</body>
+</html>
+```
+
+<br></br>
+
+---
+
+4. #### RequestDispatcher getRequestDispatcher (String path)该对象的forward方法用于请求转发
+
+<br></br>
+
+---
+
+5. #### String[] getParameterValues() 获取客户端请求传来的多个重名参数
+
+<br></br>
+
+localhost:8080/test.jsp?name=a&name=b&name=c
+```jsp
+    <%
+        String[] names = request.getParameterValues("name");
+
+    %>
+    <%=Arrays.toString(names)%>
+```
+<br></br>
+
+---
+
+6. #### void setCharacterEncoding(String charset);
+```jsp
+    <%
+        request.setCharacterEncoding("UTF-8");
+
+    %>
+```
