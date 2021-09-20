@@ -43,3 +43,12 @@ Tomcat Run Configuration-Deployment中的Application Context改成/
 <br></br>
 
 ---
+
++ ##### <font color=orange>【未解决】</font>LoginServlet中， if (username.equals(myusername) && password.equals(mypassword))报空指针
+
+<br></br>
+
+
+<br></br>
+
+---

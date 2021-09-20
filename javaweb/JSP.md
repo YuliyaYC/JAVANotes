@@ -287,3 +287,291 @@ localhost:8080/test.jsp?name=a&name=b&name=c
 
     %>
 ```
+
+<br></br>
+
+---
+
+### HTTP请求状态码
+
+<br></br>
+
+>__200__:正常
+>__404__:资源找不到
+>__400__:请求类型不匹配
+>__500__:java程序有问题
+
+---
+
+### response常用方法：
+
+<br></br>
+
+#### 1. sendRedirect(String path)重定向，页面间的跳转
+
+<br></br>
+
+转发getREquestDispatcher和重定向sendRedirect的区别：
+转发是把同一个请求传给下一个页面，重定向是创建一个新的请求传给下一个页面，之前的请求结束生命周期
+所以导致不能getAttribute
+
+<br></br>
+
+__转发__：同一个请求在服务器之间传递，地址栏不变，也叫服务器跳转
+__重定向__：由客户端发送一次新的请求来访问跳转后的目标资源，地址栏改变，也叫做客户端跳转
+
+<br></br>
+如果两个页面之间要传值，必须用转发不能用重定向
+
+##### 用户登录
+如果登陆成功，转发用户信息到首页
+如果登陆失败，重定向到登陆页面
+
+<br></br>
+
+##### login.jsp
+
+```jsp
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <title>Title</title>
+</head>
+<body>
+  <form action="/check.jsp" method="post">
+      用户名： <input type="text" name="username"/><br/>
+      密码： <input type="password" name="password"/><br/>
+      <input type="submit" value="登陆"/>
+  </form>
+
+</body>
+</html>
+```
+
+<br></br>
+
+##### check.jsp
+
+```jsp
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <title>Title</title>
+</head>
+<body>
+  <%
+    String username = request.getParameter("username");
+    String password = request.getParameter("password");
+    if (username.equals("admin") && password.equals("123456")){
+
+        //登陆成功
+        request.setAttribute("username", username);
+        request.getRequestDispatcher("welcome.jsp").forward(request, response);
+
+    } else {
+
+        //登陆失败
+        response.sendRedirect("login.jsp");
+
+    }
+
+  %>
+</body>
+</html>
+```
+
+<br></br>
+
+##### welcome.jsp
+
+```jsp
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <title>Title</title>
+</head>
+<body>
+    <%
+        String name = (String) request.getAttribute("username");
+
+    %>
+    欢迎回来<p>name</p>
+
+</body>
+</html>
+```
+
+### session
+
+服务器无法识别请求出处，不知道来自哪个终端，只会受到一个请求信号
+必须有一种技术让服务器知道请求来源
+
+__会话__：就是客户端和服务器之间发生的一系列连续的请求和响应的过程。
+也就是打开浏览器到关闭浏览器的过程
+
+__会话状态__：指服务器和浏览器在会话过程中产生的状态信息，借助会话状态，
+服务器能够把属于同一次会话的一系列请求和响应关联起来
+
+##### 实现会话有两种方式
+
+>1. session【服务端】
+>2. cookie【客户端】
+
+属于同一次会话的请求都有一个相同的标识符，sessionID
+
+#### session常用的方法：
+
++ String getId() 获取sessionID
+
++ void setMaxInactiveInterval(int interval) 设置session放入失效时间，单位为秒
+比如七天内登陆免登陆
+
++ int getMaxInactiveInterval() 获取session的失效时间
+
++ void invalidate() 设置session立即失效
+比如立即退出登陆
+
+#### CRUD
+
+>+ void setAttribute(String key, Object vlaue) 通过键值对的形式来存数据/改
+<br/>
+>+ Object getAttribute(String key) 获取
+<br/>
+>+ void removeAttribute(String key) 删除
+<br/>
+
+上面那个check.jsp是纯java代码，没必要用jsp写了再转servlet
+
+#### 如果要完全写到servlet里面：
+<br/>
+
+##### login.jsp
+```jsp
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <title>Title</title>
+</head>
+<body>
+  <form action="/login" method="post">
+      <table>
+          <tr>
+              <td>
+                  用户名：
+              </td>
+              <td>
+                  <input type="text" name="username"/><br/>
+              </td>
+          </tr>
+          <tr>
+              <td>
+                  密码：
+              </td>
+              <td>
+                  <input type="password" name="password"/><br/>
+              </td>
+
+          </tr>
+          <tr>
+              <td>
+                  <input type="submit" value="登陆"/>
+              </td>
+              <td>
+                  <input type="reset" value="重置"/>
+              </td>
+          </tr>
+      </table>
+
+  </form>
+
+</body>
+</html>
+```
+<br/>
+
+##### web.xml
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+         version="4.0">
+
+        <servlet>
+            <servlet-name>LoginServlet</servlet-name>
+            <servlet-class>com.example.servlet.LoginServlet</servlet-class>
+            <init-param>
+                <param-name>username</param-name>
+                <param-value>admin</param-value>
+            </init-param>
+            <init-param>
+                <param-name>password</param-name>
+                <param-value>123456</param-value>
+            </init-param>
+        </servlet>
+
+        <servlet-mapping>
+            <servlet-name>LoginServlet</servlet-name>
+            <url-pattern>/login</url-pattern>
+        </servlet-mapping>
+
+
+</web-app>
+```
+<br/>
+
+##### LoginServlet.java
+```java
+package com.example.servlet;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+
+public class LoginServlet extends HttpServlet {
+
+    //为了跨方法用这两个变量，定义成全局变量
+
+    private String myusername;
+    private String mypassword;
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        //这里不用this.myusername是因为init（）参数里面没有myusername
+        //若传参有，就近原则会用传参的，所以要用this区分，this.myusername特指子类的全局变量
+
+        //这两个变量是从config里面读取的初始化参数，就是正确的账号和密码
+       myusername = config.getInitParameter("username");
+       mypassword = config.getInitParameter("password");
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        super.doGet(req, resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        //从登陆页面读取的用户输入的账号和密码
+        String username = req.getParameter("username");
+        String password = req.getParameter("password ");
+
+        if (username.equals(myusername) && password.equals(mypassword)) {
+            req.setAttribute("username", username);
+            req.getRequestDispatcher("welcome.jsp").forward(req, resp);
+        }else {
+            resp.sendRedirect("login.jsp");
+        }
+    }
+}
+
+```
+<br/>
+
+
+
