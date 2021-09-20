@@ -31,71 +31,71 @@
     + 接受客户端请求
     + 根据请求做出响应
   
-  ### 【样例】
-  
-  + 新建一个class叫MyServlet
-  
-  <br></br>
++ ### 【样例】
+    
+    + 新建一个class叫MyServlet
+    
+    <br></br>
 
-  ```java
-    package com.example.servlet;
+    ```java
+        package com.example.servlet;
 
-    import javax.servlet.*;
-    import java.io.IOException;
+        import javax.servlet.*;
+        import java.io.IOException;
 
-    public class MyServlet implements Servlet {
+        public class MyServlet implements Servlet {
 
-        @Override
-        public void init(ServletConfig servletConfig) throws ServletException {
+            @Override
+            public void init(ServletConfig servletConfig) throws ServletException {
 
+            }
+
+            @Override
+            public ServletConfig getServletConfig() {
+                return null;
+            }
+
+            @Override
+            public void service(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
+
+                String id = servletRequest.getParameter("id");
+                System.out.println("我是服务端，已经获取到客户端请求,参数是" + id);
+
+                servletResponse.setContentType("text/html;charset=UTF-8");
+                servletResponse.getWriter().write("hello client" + id);
+
+            }
+
+            @Override
+            public String getServletInfo() {
+                return null;
+            }
+
+            @Override
+            public void destroy() {
+
+            }
         }
 
-        @Override
-        public ServletConfig getServletConfig() {
-            return null;
-        }
+    ```
+    <br></br>
 
-        @Override
-        public void service(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
-
-            String id = servletRequest.getParameter("id");
-            System.out.println("我是服务端，已经获取到客户端请求,参数是" + id);
-
-            servletResponse.setContentType("text/html;charset=UTF-8");
-            servletResponse.getWriter().write("hello client" + id);
-
-        }
-
-        @Override
-        public String getServletInfo() {
-            return null;
-        }
-
-        @Override
-        public void destroy() {
-
-        }
-    }
-
-  ```
-  <br></br>
-
-    浏览器无法直接访问Servlet文件夹，只能通过映射间接访问。
+        浏览器无法直接访问Servlet文件夹，只能通过映射间接访问。
 
     #### 方法一：web.xml中添加映射
 
     <br></br>
 
     ```xml
-            <servlet>
-                <servlet-name>MyServlet</servlet-name>
-                <servlet-class>com.example.servlet.MyServlet</servlet-class>
-            </servlet>
+                <servlet>
+                    <servlet-name>MyServlet</servlet-name>
+                    <servlet-class>com.example.servlet.MyServlet</servlet-class>
+                </servlet>
 
-            <servlet-mapping>
-                <servlet-name>MyServlet</servlet-name>
-                <url-pattern>/myservlet</url-pattern>
-            </servlet-mapping>
+                <servlet-mapping>
+                    <servlet-name>MyServlet</servlet-name>
+                    <url-pattern>/myservlet</url-pattern>
+                </servlet-mapping>
     ```
 
     <br></br>
@@ -108,37 +108,40 @@
 
     <br></br>
 
+    ---
+
+    #### 方法二：注解
+
+    <br></br>
+
+    ```java
+        @WebServlet("/demo1")
+        public class MyServlet implements Servlet {
+
+        }
+    ```
+    <br></br>
+    上述两种配置方式完全一致，在浏览器地址中访问/demo1就直接映射到MyServlet
+
+    <br></br>
+
 ---
 
-  #### 方法二：注解
-
-<br></br>
-
-  ```java
-    @WebServlet("/demo1")
-    public class MyServlet implements Servlet {
-
-    }
-  ```
-<br></br>
-上述两种配置方式完全一致，在浏览器地址中访问/demo1就直接映射到MyServlet
-
-<br></br>
-
----
-
-### Servlet生命周期
++ ### Servlet生命周期
 
 >+ __init()__ ：当浏览器访问Servlet的时候，Tomcat会查询当前实例化对象是否存在，
     若不存在，Tomcat通过反射机制调无参构造，init完成初始化操作（一次）（单例模式）
 
 >+ __service()__ : 之后每次都是进行业务逻辑操作，不再初始化（n次）
 
->
-+ __destroy()__ : 关闭后释放占用资源（一次）
+>+ __destroy()__ : 关闭后释放占用资源（一次）
+
+<br></br>
 ---
 
-### ServletConfig
+
+
++ ### ServletConfig
 
 ```java
 public interface ServletConfig {
