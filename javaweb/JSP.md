@@ -1109,3 +1109,141 @@ empty (null/length=0/size=0)判断
 ${not empty num}
 ```
 </br>
+
+---
+
+### JSTL
+
+</br>
+JSP Standard Tag Library JSP标准标签库，
+JSP为开发者提供的一系列的标签，使用这些标签可
+以完成一些逻辑处理，比如循环遍历集合，让代码更
+加简洁，不再出现JSP脚本穿插的情况
+
+</br>
+实际开发中，JSTL侧重于逻辑处理,EL数据展示处理
+
+</br>
+
+##### JSTL的使用
+
+</br>
+
+1. 导入jar包（jstl.jar standard.jar）到lib文件夹，lib文件夹必须放在WEB-INF目录下
+2. project structure里面libraries中按加号添加两个jar
+3. 在JSP页面引入JSTL
+
+</br>
+
+```java
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+```
+需要的地方就可以用“c”来调用JSTL
+
+</br>
+
+```jsp
+
+    <%
+        List<User> list = (List<User>) request.getAttribute();
+        for(User user1:list) {
+            request.setAttribute("user", user1);
+    %>
+        <tr>
+            <td>${user1.id}</td>
+            <td>${user1.name}</td>
+            <td>${user1.score}</td>
+        </tr>
+    <%
+        }
+    %>
+
+    上面这段用JSTL可以写成：
+    
+    <c:forEach items="${list}" var="user">
+        <tr>
+            <td>${user.id}</td>
+            <td>${user1.name}</td>
+            <td>${user1.score}</td>
+        </tr>
+    </c:forEach>
+
+```
+
+</br>
+
+##### JSTL的优点：
+</br>
+
+1.提供统一的标签
+2.可以用于编写各种动态功能
+
+</br>
+
+##### 常用标签：
+</br>
+
+set，out，remove，catch
+
+</br>
+
+##### set 向内部对象添加数据
+</br>
+
+可以用scope选择存储作用域
+
+</br>
+
+
+```jsp
+<%
+    request.setAttribute(key, value)
+%>
+
+<c:set var="name" value="tom" scope="request"></c:set>
+${requestScope.name}
+
+<%
+    User user = new User(1,"A", 50);
+    request.setAttribute("user", user);
+%>
+
+${user.name}
+<c:set target="${user}" property="name" value="B"></c:set>
+${user.name}
+```
+
+</br>
+
+##### out 可以输出域对象中的数据
+</br>
+
+```jsp
+<c:out var="name" value="tom"></c:out>
+<c:out value="${name}" default="未定义"></c:out>
+```
+
+##### remove 删除域对象的数据
+</br>
+```jsp
+<c:remove var="name" scope="page"></c:remove>
+<c:out value="${name}" default="未定义"></c:out>
+```
+</br>
+
+##### catch 捕获异常信息，页面展示
+
+</br>
+
+```jsp
+<c:catch var="error">
+    <%
+        int a  = 10/0;
+    %>
+
+</c:catch>
+${error}
+
+```
+
+</br>
