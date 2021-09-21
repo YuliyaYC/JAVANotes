@@ -44,10 +44,16 @@ Tomcat Run Configuration-Deployment中的Application Context改成/
 
 ---
 
-+ ##### <font color=orange>【未解决】</font>LoginServlet中， if (username.equals(myusername) && password.equals(mypassword))报空指针
++ ##### <font color=teal>【已解决】</font>LoginServlet中， if (username.equals(myusername) && password.equals(mypassword))报空指针
 
 <br></br>
 
+```java
+    //为了跨方法用这两个变量，定义成全局变量,双引号打一下不然空指针
+
+    private String myusername = "";
+    private String mypassword = "";
+```
 
 <br></br>
 

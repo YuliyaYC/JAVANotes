@@ -879,7 +879,7 @@ public class CookieLogoutServlet extends HttpServlet {
 
 </br>
 
-##### session:
+#### Session:
 
 </br>
 
@@ -891,13 +891,13 @@ __退出登录__：session.invalidate()
 
 </br>
 
-##### cookie：
+#### Cookie：
 response.addCookie(new Cookie(name, "admin")) 存
 取的时候要先把cookie根据key找出来
 
 </br>
 
-```jsp
+```java
         Cookie[] cookies = request.getCookies();
         for(Cookie cookie:cookies) {
             if (cookie.getName().equals("name")) {
@@ -916,3 +916,44 @@ __退出登陆__：setMaxAge(0)
 ---
 
 ### JSP内部对象作用域
+
+</br>
+
+![](./../images/web/web07.png)
+
+</br>
+
+#### 网站访问量统计
+
+```java
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <title>Title</title>
+</head>
+<body>
+    <%
+        Integer count = (Integer) application.getAttribute("count");
+        if (count == null) {
+            count = 1;
+            application.setAttribute("count");
+        }else{
+            count++;
+            application.setAttribute("count");
+        }
+    %>
+    您是当前的第<%=count%>位访客
+
+</body>
+</html>
+
+```
+
+</br>
+
+### EL 表达式
+
+Expression Language表达式语言
+代替JSP页面中数据访问时的复杂代码
+
+${变量名}
