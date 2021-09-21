@@ -951,9 +951,161 @@ __退出登陆__：setMaxAge(0)
 
 </br>
 
+---
+
 ### EL 表达式
+
+
+</br>
 
 Expression Language表达式语言
 代替JSP页面中数据访问时的复杂代码
+可以非常便捷的取出域对象（pageContext, request, session, application）中保存的数据
+前提是一定要先setAttribute
 
-${变量名}
+</br>
+
+##### EL就相当于简化getAttribute
+</br>
+
+
+${变量名}变量名就是setAttribute对应的key值
+
+</br>
+
+##### EL对于4个域对象的默认查找顺序：
+
+</br>
+
+pageContext ->request->session->application
+找到立即返回，application找不到就返回null
+
+</br>
+
+##### 指定作用域进行查找
+
+</br>
+```
+${__Scope.name} 如${pageScope.name}来获取指定的域
+```
+</br>
+
+#### EL表达式样例
+
+</br>
+
+##### User.java
+
+```java
+package com.example;
+
+public class User {
+
+    private String name;
+    private int id;
+    private int score;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public User(int id, String name, int score) {
+        this.name = name;
+        this.id = id;
+        this.score = score;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "name='" + name + '\'' +
+                ", id=" + id +
+                ", score=" + score +
+                '}';
+    }
+}
+
+```
+
+</br>
+
+##### el2.jsp
+
+```java
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <title>Title</title>
+</head>
+<body>
+    <%
+        //String name = (String)request.getAttribute("name");
+        User user = new User(1,"A",86);
+        pageContext.setAttribute("user", user);
+    %>
+
+    <hr/>
+    <table>
+        <tr>
+            <th>编号</th>
+            <th>姓名</th>
+            <th>成绩</th>
+        </tr>
+        <%
+            //EL表达式只能在jsp文件中写，
+            //jsp会把el表达式转换成(（User）pageContext.getAttribute("user")).getId();
+            //这里是调getId方法，不是调属性
+            //也可以写${user["id"]}
+        %>
+        <tr>
+            <td>${user.id}</td>
+            <td>${user.name}</td>
+            <td>${user.score}</td>
+        </tr>
+    </table>
+
+
+
+</body>
+</html>
+
+```
+
+</br>
+
+#### EL执行表达式
+</br>
+&& || ! == 返回布尔值 and也可以
+
+```
+== eq
+!= ne
+< lt
+> gt
+<= le
+>= ge
+empty (null/length=0/size=0)判断
+比如判断num是否为空
+${not empty num}
+```
+</br>
