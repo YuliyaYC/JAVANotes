@@ -400,44 +400,51 @@ __重定向__：由客户端发送一次新的请求来访问跳转后的目标�
 </body>
 </html>
 ```
+---
 
 ### session
 
+<br/>
+
 服务器无法识别请求出处，不知道来自哪个终端，只会受到一个请求信号
 必须有一种技术让服务器知道请求来源
+
+<br/>
 
 __会话__：就是客户端和服务器之间发生的一系列连续的请求和响应的过程。
 也就是打开浏览器到关闭浏览器的过程
 
 __会话状态__：指服务器和浏览器在会话过程中产生的状态信息，借助会话状态，
 服务器能够把属于同一次会话的一系列请求和响应关联起来
+<br/>
 
 ##### 实现会话有两种方式
 
 >1. session【服务端】
 >2. cookie【客户端】
+<br/>
 
 属于同一次会话的请求都有一个相同的标识符，sessionID
 
 #### session常用的方法：
 
-+ String getId() 获取sessionID
-
-+ void setMaxInactiveInterval(int interval) 设置session放入失效时间，单位为秒
+> + String getId() 获取sessionID
+> <br/>
+> + void setMaxInactiveInterval(int interval) 设置session放入失效时间，单位为秒
 比如七天内登陆免登陆
-
-+ int getMaxInactiveInterval() 获取session的失效时间
-
-+ void invalidate() 设置session立即失效
+<br/>
+> + int getMaxInactiveInterval() 获取session的失效时间
+> <br/>
+> + void invalidate() 设置session立即失效
 比如立即退出登陆
 
 #### CRUD
 
->+ void setAttribute(String key, Object vlaue) 通过键值对的形式来存数据/改
+> + void setAttribute(String key, Object vlaue) 通过键值对的形式来存数据/改
 <br/>
->+ Object getAttribute(String key) 获取
+> + Object getAttribute(String key) 获取
 <br/>
->+ void removeAttribute(String key) 删除
+> + void removeAttribute(String key) 删除
 <br/>
 
 上面那个check.jsp是纯java代码，没必要用jsp写了再转servlet
@@ -573,5 +580,339 @@ public class LoginServlet extends HttpServlet {
 ```
 <br/>
 
+##### 用session延长request生命周期
+```java
+HttpSession session = req.getSession();
+session.setAttribute("username", username);
+```
+<br/>
+
+---
+
+<br/>
+
+##### welcome.jsp
+
+<br/>
+
+```jsp
+<a href="/logout">退出登陆</a>
+```
+<br/>
+
+##### LogoutServlet
+
+<br/>
+
+```java
+package com.example.servlet;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+
+@WebServlet("/logout")
+public class LogoutServlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();
+        session.invalidate();
+        resp.sendRedirect("login.jsp");
+    }
+}
+
+```
+
+<br/>
+
+---
+
+### Cookie
+
+cookie在浏览器存储，服务端在http响应中附带传给浏览器的一个小文本文件
+一旦浏览器保存了某个cookie。在之后的请求和响应过程中，
+会将此cookie来回传递，这样就可以通过cookie这个载体
+完成客户端和服务器之间的传递
+
+</br>
+
+---
+
+##### 创建cookie，响应到客户端
+
+</br>
 
 
+```jsp
+<%
+    Cookie cookie = new Cookie("name", "cat");
+    response.addCookie(cookie);
+%>
+```
+</br>
+
+---
+
+##### 读取cookie
+
+</br>
+
+```jsp
+<%
+    Cookie[] cookies = request.getCookies();
+    for(Cookie cookie:cookies) {
+        out.write(cookie.toString() + ": "+cookie.getValue() + "</br>");
+    }
+%>
+```
+</br>
+
+cookie一关浏览器就无了
+但是可以设置时间延长生命周期。session不行，一关浏览器就无。
+
+</br>
+
+---
+
+#### cookie常用的方法
+
+</br>
+
+>+ void setMaxAge(int age) 单位为秒
+>+ int getMaxAge() 有效时间
+>+ String getName()
+>+ String getValue()
+
+</br>
+
+---
+
+#### session和cookie的区别
+
+</br>
+
+##### session：
+>+ 保存在服务器
+>+ Object
+>+ 会话结束销毁
+>+ 保存重要信息（密码）
+
+</br>
+
+##### cookie：
+>+ 保存在浏览器
+>+ String
+>+ 长期存在浏览器中，与会话无关
+>+ 保存不重要信息（视频看到哪里了）
+
+</br>
+
+---
+
+##### cookie版的用户登陆
+
+</br>
+
+##### cookielogin.jsp
+
+```jsp
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <title>Title</title>
+</head>
+<body>
+    <form action="/cookieLogin" method="post">
+        <table>
+            <tr>
+                <td>
+                    用户名：
+                </td>
+                <td>
+                    <input type="text" name="username"/><br/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    密码：
+                </td>
+                <td>
+                    <input type="password" name="password"/><br/>
+                </td>
+
+            </tr>
+            <tr>
+                <td>
+                    <input type="submit" value="登陆"/>
+                </td>
+                <td>
+                    <input type="reset" value="重置"/>
+                </td>
+            </tr>
+        </table>
+
+    </form>
+
+</body>
+</html>
+
+```
+</br>
+
+##### CookieLoginServlet.java
+
+```java
+package com.example.servlet;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+@WebServlet("/cookieLogin")
+public class CookieLoginServlet extends HttpServlet {
+
+    private String myusername = "admin";
+    private String mypassword = "123456";
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        super.doGet(req, resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String username = req.getParameter("username");
+        String password = req.getParameter("password");
+
+        if(username.equals(myusername) && password.equals(mypassword)) {
+            Cookie cookie = new Cookie("name", username);
+
+            //7天免登录，存到电脑本地
+            cookie.setMaxAge(60*60*24*7);
+            resp.addCookie(cookie);
+            resp.sendRedirect("cookiewelcome.jsp");
+        }else {
+            resp.sendRedirect("cookielogin.jsp");
+
+        }
+    }
+}
+
+```
+</br>
+
+##### cookiewelcome.jsp
+
+```jsp
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <title>Title</title>
+</head>
+<body>
+    <%
+        Cookie[] cookies = request.getCookies();
+        for(Cookie cookie:cookies) {
+            if (cookie.getName().equals("name")) {
+                out.write(cookie.toString() + ": " + cookie.getValue() + "</br>");
+            }
+        }
+    %>
+    <a href="/cookieLogout">退出</a>
+
+</body>
+</html>
+
+```
+</br>
+
+##### CookieLogoutServlet.java
+```java
+package com.example.servlet;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+@WebServlet("/cookieLogout")
+public class CookieLogoutServlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        //先把cookie找出来，再销毁
+        Cookie[] cookies = req.getCookies();
+        for(Cookie cookie:cookies) {
+            if (cookie.getName().equals("name")) {
+                cookie.setMaxAge(0);
+
+                //只要修改了cookie，必须add进resp
+                resp.addCookie(cookie);
+                resp.sendRedirect("cookielogin.jsp");
+            }
+        }
+
+
+    }
+}
+```
+</br>
+
+---
+
+</br>
+
+---
+
+##### 存储用户信息：
+
+</br>
+
+##### session:
+
+</br>
+
+setAttribute("name", "admin") 存
+getAttribute("name")  取
+
+__生命周期__：只要服务端web应用重启就销毁，只要客户端浏览器关闭就销毁
+__退出登录__：session.invalidate()
+
+</br>
+
+##### cookie：
+response.addCookie(new Cookie(name, "admin")) 存
+取的时候要先把cookie根据key找出来
+
+</br>
+
+```jsp
+        Cookie[] cookies = request.getCookies();
+        for(Cookie cookie:cookies) {
+            if (cookie.getName().equals("name")) {
+                out.write(cookie.toString() + ": " + cookie.getValue() + "</br>");
+            }
+        }
+```
+</br>
+
+__生命周期__：不随服务器重启销毁，客户端默认是关闭浏览器就销毁，
+但是可以通过setMaxAge（）来延长生命周期，可以设置时间，不随关闭浏览器就销毁
+</br>
+
+__退出登陆__：setMaxAge(0)
+
+---
+
+### JSP内部对象作用域
