@@ -58,3 +58,29 @@ Tomcat Run Configuration-Deployment中的Application Context改成/
 <br></br>
 
 ---
+
+```xml
+<!--在build中配置resources,来防止我们资源导出失败的问题-->
+   <build>
+       <resources>
+           <resource>
+               <directory>src/main/resources</directory>
+               <includes>
+                   <include>**/*.properties</include>
+                   <include>**/*.xml</include>
+               </includes>
+               <filtering>false</filtering>
+           </resource>
+           <resource>
+               <directory>src/main/java</directory>
+               <includes>
+                   <include>**/*.properties</include>
+                   <include>**/*.xml</include>
+               </includes>
+               <filtering>false</filtering>
+           </resource>
+       </resources>
+   </build>
+```
+
+---
